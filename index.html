@@ -29,35 +29,29 @@ const questions = [
 export default function DadTriviaApp() {
   const [current, setCurrent] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const currentQ = questions[current];
 
   const nextQuestion = () => {
     setShowAnswer(false);
     setCurrent((prev) => (prev + 1) % questions.length);
   };
 
-  const currentQ = questions[current];
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-yellow-50 p-4">
+    <main className="min-h-screen bg-blue-50 flex flex-col items-center justify-center p-4 text-center">
       <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-bold mb-6 text-center"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="text-4xl font-bold mb-6"
       >
         🎮 Who's Your Daddy? Trivia 🎮
       </motion.h1>
 
-      <Card className="w-full max-w-xl shadow-2xl">
-        <CardContent className="p-6 text-center">
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-2xl font-semibold mb-4"
-          >
-            {currentQ.question}
-          </motion.h2>
+      <Card className="max-w-md w-full bg-white shadow-lg rounded-xl">
+        <CardContent className="p-6">
+          <h2 className="text-2xl font-semibold mb-4">{currentQ.question}</h2>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid gap-3">
             {currentQ.options.map((opt, idx) => (
               <Button
                 key={idx}
@@ -71,19 +65,20 @@ export default function DadTriviaApp() {
 
           {showAnswer && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-green-600 text-xl font-bold mt-2"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="mt-4 text-green-600 font-bold text-xl"
             >
-              ✅ Correct! The answer is always: <span className="underline">Dad</span>.
+              ✅ Correct! The answer is always: Dad.
             </motion.div>
           )}
-
-          <Button onClick={nextQuestion} className="mt-6">
-            Next Question
-          </Button>
         </CardContent>
       </Card>
-    </div>
+
+      <Button onClick={nextQuestion} className="mt-6">
+        ➡️ Next Question
+      </Button>
+    </main>
   );
 }
