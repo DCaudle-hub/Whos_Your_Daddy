@@ -1,0 +1,89 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+
+const questions = [
+  {
+    question: "Who always knows where the remote is?",
+    options: ["Mom", "Grandma", "Neighbor", "Dad"],
+  },
+  {
+    question: "Who tells the best (worst) jokes?",
+    options: ["Comedian", "Dog", "TV", "Dad"],
+  },
+  {
+    question: "Who grills in 110-degree heat with socks and sandals on?",
+    options: ["Uncle Bob", "Next-door neighbor", "Teenager", "Dad"],
+  },
+  {
+    question: "Who says 'Ask your mother' but already knows the answer?",
+    options: ["The principal", "The mailman", "The internet", "Dad"],
+  },
+  {
+    question: "Who can fall asleep in under 10 seconds in a recliner?",
+    options: ["Cat", "Boss", "Baby", "Dad"],
+  },
+];
+
+export default function DadTriviaApp() {
+  const [current, setCurrent] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+
+  const nextQuestion = () => {
+    setShowAnswer(false);
+    setCurrent((prev) => (prev + 1) % questions.length);
+  };
+
+  const currentQ = questions[current];
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-yellow-50 p-4">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-4xl font-bold mb-6 text-center"
+      >
+        🎮 Who's Your Daddy? Trivia 🎮
+      </motion.h1>
+
+      <Card className="w-full max-w-xl shadow-2xl">
+        <CardContent className="p-6 text-center">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-2xl font-semibold mb-4"
+          >
+            {currentQ.question}
+          </motion.h2>
+
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {currentQ.options.map((opt, idx) => (
+              <Button
+                key={idx}
+                onClick={() => setShowAnswer(true)}
+                className="text-lg"
+              >
+                {opt}
+              </Button>
+            ))}
+          </div>
+
+          {showAnswer && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-green-600 text-xl font-bold mt-2"
+            >
+              ✅ Correct! The answer is always: <span className="underline">Dad</span>.
+            </motion.div>
+          )}
+
+          <Button onClick={nextQuestion} className="mt-6">
+            Next Question
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
