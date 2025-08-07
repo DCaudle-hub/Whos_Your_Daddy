@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 
 const questions = [
   {
@@ -29,56 +28,107 @@ const questions = [
 export default function DadTriviaApp() {
   const [current, setCurrent] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const currentQ = questions[current];
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const nextQuestion = () => {
     setShowAnswer(false);
+    setSelectedOption(null);
     setCurrent((prev) => (prev + 1) % questions.length);
   };
 
+  const handleOptionClick = (optionIndex) => {
+    setSelectedOption(optionIndex);
+    setTimeout(() => setShowAnswer(true), 300);
+  };
+
+  const currentQ = questions[current];
+
   return (
-    <main className="min-h-screen bg-blue-50 flex flex-col items-center justify-center p-4 text-center">
-      <motion.h1
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="text-4xl font-bold mb-6"
-      >
-        🎮 Who's Your Daddy? Trivia 🎮
-      </motion.h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-2xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+            🎮 Who's Your Daddy? 🎮
+          </h1>
+          <p className="text-xl text-blue-200 font-medium">The Ultimate Dad Trivia</p>
+        </div>
 
-      <Card className="max-w-md w-full bg-white shadow-lg rounded-xl">
-        <CardContent className="p-6">
-          <h2 className="text-2xl font-semibold mb-4">{currentQ.question}</h2>
+        {/* Main Card */}
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl">
+          <CardContent className="p-8">
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-sm text-blue-200 mb-2">
+                <span>Question {current + 1}</span>
+                <span>{questions.length} Total</span>
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${((current + 1) / questions.length) * 100}%` }}
+                ></div>
+              </div>
+            </div>
 
-          <div className="grid gap-3">
-            {currentQ.options.map((opt, idx) => (
+            {/* Question */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold text-white leading-relaxed">
+                {currentQ.question}
+              </h2>
+            </div>
+
+            {/* Options */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {currentQ.options.map((opt, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleOptionClick(idx)}
+                  disabled={showAnswer}
+                  className={`
+                    p-4 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:scale-105
+                    ${selectedOption === idx 
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                    }
+                    ${showAnswer ? 'cursor-not-allowed' : 'cursor-pointer hover:shadow-lg'}
+                    disabled:opacity-75
+                  `}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            {/* Answer Reveal */}
+            {showAnswer && (
+              <div className="text-center mb-6 animate-in fade-in duration-500">
+                <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white py-4 px-6 rounded-xl shadow-lg">
+                  <div className="text-2xl font-bold mb-2">✅ Correct!</div>
+                  <div className="text-lg">The answer is always: <span className="font-black">Dad</span></div>
+                </div>
+              </div>
+            )}
+
+            {/* Next Button */}
+            <div className="text-center">
               <Button
-                key={idx}
-                onClick={() => setShowAnswer(true)}
-                className="text-lg"
+                onClick={nextQuestion}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
-                {opt}
+                {current === questions.length - 1 ? "🔄 Start Over" : "➡️ Next Question"}
               </Button>
-            ))}
-          </div>
+            </div>
+          </CardContent>
+        </Card>
 
-          {showAnswer && (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.4 }}
-              className="mt-4 text-green-600 font-bold text-xl"
-            >
-              ✅ Correct! The answer is always: Dad.
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Button onClick={nextQuestion} className="mt-6">
-        ➡️ Next Question
-      </Button>
-    </main>
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-blue-200/70 text-sm">
+            Made with ❤️ for all the amazing dads out there
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
